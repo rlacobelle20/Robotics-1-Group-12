@@ -9,3 +9,6 @@ Code for rob1 project
 
 ## To run code, need to install RPI General Robotics Python Library
 ```pip install general-robotics-toolbox```
+
+## Also need to install quadprog
+```pip install quadprog```
