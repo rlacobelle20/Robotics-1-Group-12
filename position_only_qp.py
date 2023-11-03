@@ -16,6 +16,16 @@ def qpPathGen_positionOnly(robot, q0, P0Td, epsilon_p, q_prime_min, q_prime_max,
     
     [R0T0,P0T0] = fwdkin(robot,q0)
     
+    # compute path in task space
+    Pdes_lambda = np.zeros((3,len(lambda_)))
+    dP0T_dlambda = P0Td - P0T0
+    
+    for i in range(len(lambda_)):
+        Pdes_lambda[:,i] = np.dot((1-lambda_[i]),P0T0) + np.dot(lambda_[i],P0Td)
+    
+    # solve qp problem and generate joint space path
+    
+    
 def qprimelimits_full(qlimit,qprev,N,qpmax,qpmin):
     n = len(qlimit)
     
