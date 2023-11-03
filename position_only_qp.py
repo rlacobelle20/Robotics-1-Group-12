@@ -1,8 +1,9 @@
 # position only qp
 
 import numpy as np
-import scipy
 import math
+import general_robotics_toolbox as rox
+import quadprog
 
 """
 translation of MATLAB code from hw into python
@@ -15,7 +16,7 @@ def qpPathGen_positionOnly(robot, q0, P0Td, epsilon_p, q_prime_min, q_prime_max,
     lambda_= np.arange(0,1,1/N) # creates an array 0-1 in increments of 1/N
     options = {'Display': 'off'}
     
-    R0T0,P0T0 = fwdkin(robot,q0)
+    R0T0,P0T0 = rox.fwdkin(robot,q0)
     
     # compute path in task space
     Pdes_lambda = np.zeros((3,len(lambda_)))
@@ -41,11 +42,11 @@ def qpPathGen_positionOnly(robot, q0, P0Td, epsilon_p, q_prime_min, q_prime_max,
     
     for k in range(len(lambda_)):
         lb,ub = qprimelimits_full(robot.qlimit, qprev, N, q_prime_max, q_prime_min)
-        J = robotjacobian(robot,qprev)
+        J = rox.robotjacobian(robot,qprev)
         vt = dP0T_dlambda
         G = getqp_G_positionOnly(qprev,J[k:2,:],vt,epsilon_p)
         a = getqp_a_positionOnly(qprev,epsilon_p)
-        q_prime_temp,tmp,exitflag[k] = quadprog(G,a,[],[],[],[],lb,ub,[],options)
+        q_prime_temp,tmp,exitflag[k] = quadprog.solve_qp(G,a,[],[],[],[],lb,ub,[],options) v# change later
         q_prime_temp = q_prime_temp[:n]
         
         # check exit flag -- all elements should be 1
@@ -56,7 +57,7 @@ def qpPathGen_positionOnly(robot, q0, P0Td, epsilon_p, q_prime_min, q_prime_max,
         q_prime[:,k] = q_prime_temp
         qprev = qprev + (1/N) * q_prime_temp
         q_lambda[:,k+1] = qprev
-        Rtemp, Ptemp = fwdkin(robot,qprev)
+        Rtemp, Ptemp = rox.fwdkin(robot,qprev)
         P0T_lambda[:,k+1] = Ptemp
         R0T_lambda[:,:,k+1] = Rtemp
         
