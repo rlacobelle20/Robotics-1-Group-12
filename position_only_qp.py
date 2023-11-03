@@ -48,8 +48,8 @@ def qpPathGen_positionOnly(robot, q0, P0Td, epsilon_p, q_prime_min, q_prime_max,
         a = getqp_a_positionOnly(qprev,epsilon_p)
         
         # need to make b = [L;U], c = [I,-I]
-        
-        q_prime_temp,tmp,exitflag[k] = quadprog.solve_qp(G,-a,[],[],[],[],lb,ub,[],options) v# change later
+        # need to change meq
+        q_prime_temp,tmp,exitflag[k] = quadprog.solve_qp(G,-a,[],[],[],[],lb,ub,[],options) # change later
         q_prime_temp = q_prime_temp[:n]
         
         # check exit flag -- all elements should be 1
