@@ -16,6 +16,13 @@ def qpPathGen_positionOnly(robot, q0, P0Td, epsilon_p, q_prime_min, q_prime_max,
     
     [R0T0,P0T0] = fwdkin(robot,q0)
     
+def qprimelimits_full(qlimit,qprev,N,qpmax,qpmin):
+    n = len(qlimit)
+    # compute limits due to joint stops
+    lb_js = N * 
+    return lb,ub
+    
+# G = H
 def getqp_G_positionOnly(dq, J, vp, ep):
     n = len(dq)
     G1 = np.dot( ( np.array(J, np.zeros((3,1))) ).T,np.array( J, np.zeros((3,1)) ) )
@@ -25,3 +32,8 @@ def getqp_G_positionOnly(dq, J, vp, ep):
     G4 = np.dot( (np.array([np.zeros((1,n)), 0], [np.zeros((1,n)), math.sqrt(ep)])).T, np.array([np.zeros((1,n)), 0], [np.zeros((1,n)), math.sqrt(ep)]) )
     G = 2 * (G1+G2+G3+G4)
     return G
+
+# a = -f
+def getqp_a_positionOnly(dq,ep):
+    a = -2 * (np.array(np.zeros((1,len(dq))), ep)).T
+    return a
