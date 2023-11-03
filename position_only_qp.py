@@ -18,8 +18,28 @@ def qpPathGen_positionOnly(robot, q0, P0Td, epsilon_p, q_prime_min, q_prime_max,
     
 def qprimelimits_full(qlimit,qprev,N,qpmax,qpmin):
     n = len(qlimit)
+    
     # compute limits due to joint stops
-    lb_js = N * 
+    lb_js = N * (qlimit[:,0] - qprev)
+    ub_js = N * (qlimit[:,1] - qprev)
+    
+    # compare and find most restrictive bound
+    lb = np.zeros((n+2,1))
+    ub = np.zeros((n+2),1)
+    ub[-2] = 1
+    ub[-1] = 1
+    
+    for k in range(n):
+        if lb_js[k] > qpmin[k]:
+            lb[k] = lb_js[k]
+        else:
+            lb[k] = qpmin[k]
+        
+        if ub_js[k] < qpmax[k]:
+            ub[k] = ub_js[k]
+        else:
+            ub[k] = qpmax[k]
+    
     return lb,ub
     
 # G = H
