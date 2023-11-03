@@ -69,6 +69,8 @@ def qpPathGen_positionOnly(robot, q0, P0Td, epsilon_p, q_prime_min, q_prime_max,
     P0T_lambda = np.delete(P0T_lambda, -1, axis=1)
     R0T_lambda = np.delete(R0T_lambda, -1, axis=2)
     
+    return q_lambda, lambda_, P0T_lambda, R0T_lambda
+    
 def qprimelimits_full(qlimit,qprev,N,qpmax,qpmin):
     n = len(qlimit)
     
