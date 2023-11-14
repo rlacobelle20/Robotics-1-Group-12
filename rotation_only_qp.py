@@ -91,6 +91,27 @@ def qpPathGen_rotationOnly(robot,q0,R0Td,epsilon_r,q_prime_min,q_prime_max,N):
         J = rox.robotjacobian(robot,qprev)
         vr = der_dlambda[k]*k_hat
         G = getqp_G_rotationOnly(qprev,J[k:0,:],vr,epsilon_r)
-        a = getqp_a_rotationOnly()
+        a = getqp_a_rotationOnly(qprev,epsilon_r)
+        
+        q_prime_tmp,tmp,exitflag[k] = quadprog.solveqp(G,-a,[],[],[],[],lb,ub,[],options)
+        q_prime_tmp = q_prime_tmp[0:n]
+        
+        # check exitflag --> all elements should be 1
+        if exitflag[k] != 1:
+            print('Generation Error')
+            return
+        
+        q_prime[:,k] = q_prime_tmp
+        qprev = qprev + (1/N)*q_prime_tmp
+        q_lambda[:,k+1] = qprev
+        Rtmp,Ptmp = rox.fwdkin(robot,qprev)
+        P0T_lambda[:,k+1] = Ptmp
+        R0T_lambda[:,:,k+1] = Rtmp
+        Eul_lambda[:,k+1] = np.flip(rox.q2R(Rtmp))
     
-    return
+    # chop off excess
+    q_lambda[:,-1] = []
+    P0T_lambda[:,-1] = []
+    R0T_lambda[:,:,-1] = []
+    
+    return q_lambda,lambda_,P0T_lambda,R0T_lambda
