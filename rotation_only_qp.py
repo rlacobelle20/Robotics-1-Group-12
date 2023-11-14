@@ -43,9 +43,10 @@ def getqp_G_rotationOnly(dq, J, vr, er):
     G = 2 * (G1+G2+G3+G4)
     return G
 
-def getqp_f_rotationOnly( dq, er ):
-    f = -2*(np.zeros((1,len(dq),er)).T)
-    return f
+# a = -f
+def getqp_a_rotationOnly( dq, er ):
+    a = -2*(np.zeros((1,len(dq),er)).T)
+    return a
 
 """
 translation of matlab code into python
@@ -69,8 +70,27 @@ def qpPathGen_rotationOnly(robot,q0,R0Td,epsilon_r,q_prime_min,q_prime_max,N):
     for k in range(len(lambda_)):
         theta = (1-lambda_[k]) * theta0
         R = rox.rot(k_hat,theta)
-        Euldes_lambda[:,k] = np.flipud(rox.q2R(R)) # this might be very wrong --> should flip matrix
+        Euldes_lambda[:,k] = np.flip(rox.q2R(R)) # this might be very wrong --> should flip matrix
         der_dlambda[k] = -theta0
     
     # solve qp problem and generate join space path
+    q_prime = np.zeros((n,len(lambda_)))
+    q_lambda = np.zeros((n,len(lambda_)))
+    q_lambda[:,0] = q0
+    exitflag = np.zeros((1,len(lambda_)))
+    P0T_lambda = np.zeros((3,len(lambda_)))
+    R0T_lambda = np.zeros((3,3,len(lambda_)))
+    P0T_lambda[:,0] = P0T0
+    R0T_lambda[:,:,1] = R0T0
+    Eul_lambda = np.zeros((3,len(lambda_)))
+    Eul_lambda[:,1] = np.flip(rox.q2R(R0T_lambda[:,:,1]))
+    qprev = q0
+    
+    for k in range(len(lambda_)):
+        lb,ub = qprimelimits_full(robot.qlimit, qprev, N, q_prime_max, q_prime_min)
+        J = rox.robotjacobian(robot,qprev)
+        vr = der_dlambda[k]*k_hat
+        G = getqp_G_rotationOnly(qprev,J[k:0,:],vr,epsilon_r)
+        a = getqp_a_rotationOnly()
+    
     return
