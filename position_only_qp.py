@@ -112,3 +112,16 @@ def getqp_G_positionOnly(dq, J, vp, ep):
 def getqp_a_positionOnly(dq,ep):
     a = -2 * (np.array(np.zeros((1,len(dq))), ep)).T
     return a
+
+# testing
+dofbot = rox.defineDoftbot()
+q0 = np.array([[0],[45],[135],[45],[135]])* math.pi / 180
+R0,P0 = rox.fwdkin(dofbot,q0)
+R0Td = R0
+P0Td = P0 - np.array([[0],[0],[0.05]])
+N = 100
+epsilon_r = 0.1
+epsilon_p = 0.1
+q_prime_min = -np.inf * np.ones((5,1))
+q_prime_max = np.inf * np.ones((5,1))
+q_lambda,lambda_,P0T_lambda,R0T_lambda = qpPathGen_positionOnly(dofbot,q0,P0Td,epsilon_p,q_prime_min,q_prime_max,N)

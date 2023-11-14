@@ -115,3 +115,16 @@ def qpPathGen_rotationOnly(robot,q0,R0Td,epsilon_r,q_prime_min,q_prime_max,N):
     R0T_lambda = np.delete(R0T_lambda, -1, axis=2)
     
     return q_lambda,lambda_,P0T_lambda,R0T_lambda
+
+# testing
+dofbot = rox.defineDofbot()
+q0 = np.array([[0],[45],[135],[45],[135]])* math.pi / 180
+R0,P0 = rox.fwdkin(dofbot,q0)
+R0Td = R0*rox.rot(np.array([[1],[0],[0]]), 20*math.pi/180)
+P0Td = P0 - np.array([[0],[0],[0.05]])
+N = 100
+epsilon_r = 0.1
+epsilon_p = 0.1
+q_prime_min = -np.inf * np.ones((5,1))
+q_prime_max = np.inf * np.ones((5,1))
+q_lambda,lambda_,P0T_lambda,R0T_lambda = qpPathGen_rotationOnly(dofbot,q0,R0Td, epsilon_r,q_prime_min,q_prime_max,N)
