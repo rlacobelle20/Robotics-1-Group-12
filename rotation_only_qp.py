@@ -99,7 +99,7 @@ def qpPathGen_rotationOnly(robot,q0,R0Td,epsilon_r,q_prime_min,q_prime_max,N):
         # check exitflag --> all elements should be 1
         if exitflag[k] != 1:
             print('Generation Error')
-            return
+            return 1
         
         q_prime[:,k] = q_prime_tmp
         qprev = qprev + (1/N)*q_prime_tmp
@@ -110,8 +110,8 @@ def qpPathGen_rotationOnly(robot,q0,R0Td,epsilon_r,q_prime_min,q_prime_max,N):
         Eul_lambda[:,k+1] = np.flip(rox.q2R(Rtmp))
     
     # chop off excess
-    q_lambda[:,-1] = []
-    P0T_lambda[:,-1] = []
-    R0T_lambda[:,:,-1] = []
+    q_lambda = np.delete(q_lambda, -1, axis=1)
+    P0T_lambda = np.delete(P0T_lambda, -1, axis=1)
+    R0T_lambda = np.delete(R0T_lambda, -1, axis=2)
     
     return q_lambda,lambda_,P0T_lambda,R0T_lambda

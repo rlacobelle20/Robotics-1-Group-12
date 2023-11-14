@@ -28,12 +28,12 @@ def qpPathGen_positionOnly(robot, q0, P0Td, epsilon_p, q_prime_min, q_prime_max,
     # solve qp problem and generate joint space path
     q_prime = np.zeros((n,len(lambda_)))
     q_lambda = np.zeros((n,len(lambda_)))
-    q_lambda[:,1] = q0
+    q_lambda[:,0] = q0
     exitflag = np.zeros((1,len(lambda_)))
     P0T_lambda = np.zeros((3,len(lambda_)))
     R0T_lambda = np.zeros((3,3,len(lambda_)))
-    P0T_lambda[:,1] = P0T0
-    R0T_lambda[:,:,1] = R0T0
+    P0T_lambda[:,0] = P0T0
+    R0T_lambda[:,:,0] = R0T0
     qprev = q0
     
     # initialize for for loop
@@ -44,7 +44,7 @@ def qpPathGen_positionOnly(robot, q0, P0Td, epsilon_p, q_prime_min, q_prime_max,
         lb,ub = qprimelimits_full(robot.qlimit, qprev, N, q_prime_max, q_prime_min)
         J = rox.robotjacobian(robot,qprev)
         vt = dP0T_dlambda
-        G = getqp_G_positionOnly(qprev,J[k:2,:],vt,epsilon_p)
+        G = getqp_G_positionOnly(qprev,J[k:1,:],vt,epsilon_p)
         a = getqp_a_positionOnly(qprev,epsilon_p)
         
         # need to make b = [L;U], c = [I,-I]
