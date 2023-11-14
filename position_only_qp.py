@@ -125,3 +125,8 @@ epsilon_p = 0.1
 q_prime_min = -np.inf * np.ones((5,1))
 q_prime_max = np.inf * np.ones((5,1))
 q_lambda,lambda_,P0T_lambda,R0T_lambda = qpPathGen_positionOnly(dofbot,q0,P0Td,epsilon_p,q_prime_min,q_prime_max,N)
+
+print('q_lambda: \n{}'.format(q_lambda))
+print('lambda: \n{}'.format(lambda_))
+print('P0T_lambda: \n{}'.format(P0T_lambda))
+print('R0T_lambda: \n{}'.format(R0T_lambda))
